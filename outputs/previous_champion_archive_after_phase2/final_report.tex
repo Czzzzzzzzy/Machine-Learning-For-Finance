@@ -1,0 +1,1228 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Final C2O Strategy Audit Report},
+  pdfauthor={C2O Coursework Submission},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Final C2O Strategy Audit Report}
+\author{C2O Coursework Submission}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{final-c2o-strategy-audit-report}{%
+\section{Final C2O Strategy Audit
+Report}\label{final-c2o-strategy-audit-report}}
+
+\textbf{Coursework strategy:} close-to-open equity strategy using the
+promoted volatility-scaled overnight return target.\\
+\textbf{Final target:}
+\texttt{volatility\_scaled\_overnight\_return\ =\ overnight\_next\ /\ (vol20\ /\ sqrt(252))}.\\
+\textbf{Volatility denominator:} trailing 20-day close-to-close
+volatility shifted by one trading day.\\
+\textbf{Development cutoff:} 2024-12-31. 2025-2026 is not used for
+development and is treated as held out for marker evaluation.\\
+\textbf{Headline 250M result:} 3.93\% net annual return, 4.90\% net
+volatility, 0.811 net Sharpe, and -10.19\% maximum drawdown.\\
+\textbf{Primary sources:} \texttt{outputs/performance\_summary.csv},
+\texttt{outputs/report\_ready/final\_strategy\_config.md},
+\texttt{outputs/report\_ready/final\_strategy\_selection\_memo.md}, and
+\texttt{outputs/report\_ready/final\_reproduction\_log.md}.
+
+\hypertarget{1-executive-summary}{%
+\subsection{1. Executive Summary}\label{1-executive-summary}}
+
+The final promoted C2O strategy is not the original baseline. The
+original baseline remains the starting point and is archived in
+\texttt{outputs/baseline\_archive/}. The archive readme records an
+original baseline pipeline Sharpe of about 0.374 at 250M and a logged
+experiment-harness baseline Sharpe of about 0.379 at 250M. The
+difference is disclosed in
+\texttt{outputs/baseline\_archive/baseline\_readme.md} and is treated as
+an implementation/logging distinction rather than a change in economic
+thesis.
+
+The final strategy uses the same point-in-time feature set as the
+baseline, but changes the supervised learning target from raw overnight
+return to a volatility-scaled overnight return. Economically, this asks
+the model to rank stocks by risk-adjusted overnight opportunity rather
+than by raw overnight magnitude. That is a narrower and more defensible
+improvement than adding new signals after seeing results: the feature
+set, universe rules, costs, borrow treatment, participation cap, and
+development cutoff remain frozen.
+
+At 250M AUM the final strategy earns 3.93\% net annual return with
+4.90\% net volatility, a net Sharpe of 0.811, and a maximum drawdown of
+-10.19\%. These numbers come from
+\texttt{outputs/performance\_summary.csv}. The result is modest rather
+than spectacular. It is credible precisely because it is reported net of
+commission, auction slippage, and borrow costs; because the 5\% ADV20
+participation cap is enforced in the positions files; and because the
+final audit acknowledges that performance degrades under larger capital.
+
+The strongest caution is capacity. At 50M the strategy uses nearly the
+full target gross exposure and records a net Sharpe of 0.850. At 250M
+average gross exposure falls to 70.43\% because the participation cap
+binds on almost every trading day. At 1B it falls to 22.82\%, and the
+net Sharpe falls to 0.266. This is not presented as a scalable
+institutional anomaly at arbitrary size. It is a small-to-mid-capacity
+overnight implementation whose economics are materially shaped by
+trading constraints.
+
+The second major caution is costs. The 250M gross Sharpe is 2.427, but
+commission, auction slippage, and borrow reduce it to 0.811. Auction
+slippage is the largest single degradation item. The report therefore
+avoids gross-return marketing and treats implementation as part of the
+strategy, not an afterthought.
+
+\hypertarget{final-performance-by-aum}{%
+\subsubsection{Final Performance by
+AUM}\label{final-performance-by-aum}}
+
+\begin{longtable}[]{@{}lllrlrrllr@{}}
+\toprule
+AUM & Net annual return & Net vol & Net Sharpe & Max drawdown & Gross
+Sharpe & Avg turnover & Avg gross exposure & IC mean & IC t-stat \\
+\midrule
+\endhead
+\$50m & 4.30\% & 5.11\% & 0.85 & -15.50\% & 3.071 & 1.998 & 99.90\% &
+2.82\% & 9.465 \\
+\$250m & 3.93\% & 4.90\% & 0.811 & -10.19\% & 2.427 & 1.409 & 70.43\% &
+2.82\% & 9.465 \\
+\$1bn & 0.67\% & 2.64\% & 0.266 & -16.06\% & 1.239 & 0.456 & 22.82\% &
+2.82\% & 9.465 \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/performance\_summary.csv}. Basket selection
+rule, participation cap, cost schedule, and target version are
+documented in \texttt{outputs/report\_ready/final\_strategy\_config.md}.
+
+\hypertarget{baseline-versus-final-candidate-at-250m}{%
+\subsubsection{Baseline Versus Final Candidate at
+250M}\label{baseline-versus-final-candidate-at-250m}}
+
+\begin{longtable}[]{@{}lllrlrrrrrllrl@{}}
+\toprule
+Strategy & Net annual return & Net vol & Net Sharpe & Max DD & Gross
+Sharpe & Commission drag & Slippage drag & Borrow drag & Turnover & Avg
+gross exp. & IC mean & IC t-stat & Worst 12m \\
+\midrule
+\endhead
+Original baseline (experiment harness) & 1.69\% & 4.71\% & 0.379 &
+-24.58\% & 1.729 & 0.309 & 0.928 & 0.112 & 1.158 & 57.89\% & 2.73\% &
+8.363 & -12.98\% \\
+Final volatility-scaled target & 3.93\% & 4.90\% & 0.811 & -10.19\% &
+2.427 & 0.361 & 1.084 & 0.17 & 1.409 & 70.43\% & 2.82\% & 9.465 &
+-10.09\% \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/report\_ready/final\_candidate\_comparison.csv};
+baseline archive explanation in
+\texttt{outputs/baseline\_archive/baseline\_readme.md}.
+
+\hypertarget{2-data-return-construction-and-point-in-time-controls}{%
+\subsection{2. Data, Return Construction, and Point-in-Time
+Controls}\label{2-data-return-construction-and-point-in-time-controls}}
+
+The strategy is built around overnight returns from close on day
+\texttt{t} to open on day \texttt{t+1}. The final modelling target is
+the next overnight return scaled by trailing realized volatility. The
+denominator is \texttt{vol20\ /\ sqrt(252)}, where \texttt{vol20} is a
+20-trading-day close-to-close volatility estimate shifted by one trading
+day. This shift is the critical point-in-time control: the target
+transformation cannot see the close-to-close return that is still
+unknown at the 15:50 ET decision time on day \texttt{t}.
+
+The point-in-time audit in
+\texttt{outputs/report\_ready/volatility\_scaled\_target\_point\_in\_time\_audit.md}
+is the basis for promoting the candidate. It verifies that the
+volatility denominator uses trailing information, is shifted, does not
+use future overnight returns, does not use future close/high/low
+observations, does not use full-sample volatility, and does not
+introduce 2025+ data. The audit also confirms that the target
+transformation changes only the training target and not the live feature
+set.
+
+The return construction was reconciled against the available price
+fields. The frozen reconciliation file reports the following checks:
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Metric & Value \\
+\midrule
+\endhead
+tolerance & 1.000e-08 \\
+stock\_days\_checked & 5,469,968 \\
+fail\_count & 0 \\
+fail\_fraction & 0 \\
+median\_abs\_residual & 0.000e+00 \\
+p99\_abs\_residual & 2.220e-16 \\
+max\_abs\_residual & 4.441e-16 \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/return\_reconciliation\_summary.csv}.
+
+\hypertarget{earnings-timing-controls}{%
+\subsubsection{Earnings Timing
+Controls}\label{earnings-timing-controls}}
+
+Earnings data are a classic look-ahead risk in close-to-open strategies.
+The frozen audit examples include one after-market-close case, one
+before-market-open case, and a same-day example. The rules preserve
+decision-time availability: before-market events can be known before
+that day's close, while after-market events are not available before
+that close.
+
+\begin{longtable}[]{@{}lrllllll@{}}
+\toprule
+Ticker & Instrument & Reporting date & Timing & Raw event date &
+Strategy trading date & Excluded decision dates & Rule applied \\
+\midrule
+\endhead
+MOS & 18 & 2010-01-05 & after & 2010-01-05 & 2010-01-05 & 2010-01-04,
+2010-01-05, 2010-01-06 & After-market event is not known before the
+close; use provided strategy trading date. \\
+RPM & 1275 & 2010-01-06 & before & 2010-01-06 & 2010-01-05 & 2010-01-04,
+2010-01-05, 2010-01-06 & Before-market event is known before that day's
+close; use provided strategy trading date. \\
+MOS & 18 & 2010-01-05 & after & 2010-01-05 & 2010-01-05 & 2010-01-04,
+2010-01-05, 2010-01-06 & After-market event is not known before the
+close; use provided strategy trading date. \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/earnings\_timing\_examples.csv} and
+\texttt{outputs/report\_ready/earnings\_timing\_audit.md}.
+
+The hand-checkable examples matter because an earnings feature can
+accidentally become a future-information feature if all reporting dates
+are treated identically. The final audit does not rely on a generic
+statement that the data are lagged; it exports concrete examples with
+\texttt{raw\_event\_date}, \texttt{strat\_trading\_date}, excluded
+decision dates, the rule applied, and a text explanation.
+
+\hypertarget{short-interest-timing-controls}{%
+\subsubsection{Short-Interest Timing
+Controls}\label{short-interest-timing-controls}}
+
+Short-interest data are lagged relative to economic reality and can be
+dangerous if the model is allowed to use a value before it could have
+been published or vendor-processed. The submitted pipeline treats the
+provided \texttt{all\_data} short-interest proxies as already
+point-in-time transformed according to the coursework data package, and
+then applies an additional one-trading-day strategy lag before using
+\texttt{dsi}, \texttt{dtcn}, and \texttt{ddtcn} in features or
+borrow-tier assignment. The audit examples are:
+
+\begin{longtable}[]{@{}lrllrrrl@{}}
+\toprule
+Ticker & Instrument & Source feature date & Decision date using lag1 &
+DSI & DTCN & DDTCN & Rule applied \\
+\midrule
+\endhead
+HLT & 1 & 2015-01-27 & 2015-01-28 & 0.004074 & 1.66949 & -0.245679 &
+Short-interest proxies are read from the daily all\_data panel, then
+shifted one trading day in add\_point\_in\_time\_features. \\
+HLT & 1 & 2015-01-28 & 2015-01-29 & 0.004074 & 1.66949 & -0.245679 &
+Short-interest proxies are read from the daily all\_data panel, then
+shifted one trading day in add\_point\_in\_time\_features. \\
+HLT & 1 & 2015-01-29 & 2015-01-30 & 0.004074 & 1.66949 & -0.245679 &
+Short-interest proxies are read from the daily all\_data panel, then
+shifted one trading day in add\_point\_in\_time\_features. \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/short\_interest\_lag\_examples.csv} and
+\texttt{outputs/report\_ready/short\_interest\_lag\_audit.md}.
+
+The limitation is explicit: the frozen outputs do not contain raw FINRA
+settlement and publication dates. The report therefore does not claim
+independent reconstruction of the original short-interest publication
+lag. It claims only what is supported by the repository evidence: the
+strategy verifies decision-time use of the provided point-in-time series
+and adds a one-trading-day decision lag. This is also listed in
+\texttt{outputs/report\_ready/report\_missing\_items.md}.
+
+\hypertarget{feature-inventory-and-observability}{%
+\subsubsection{Feature Inventory and
+Observability}\label{feature-inventory-and-observability}}
+
+The final feature set is unchanged from the baseline. The report-ready
+feature inventory records the formula, data source, required lag, and
+whether the feature is observable at 15:50 ET on day \texttt{t}. A
+compact extract is shown below; the complete table is in
+\texttt{outputs/report\_ready/feature\_inventory.csv}.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Feature & Formula & Data source & Required lag & Observable at 15:50 ET
+day t \\
+\midrule
+\endhead
+rank\_r\_on\_1d & r\_overnight = adj\_open\_t / adj\_close\_\{t-1\} - 1
+& prices.parquet: adjusted open, adjusted close & 0 trading days;
+Open\_t is known after the 09:30 auction & Yes \\
+rank\_r\_on\_5d & rolling mean of r\_overnight over 5 sessions,
+min\_periods=3 & prices.parquet: adjusted open, adjusted close & 0
+trading days; uses overnight returns available by 15:50 ET & Yes \\
+rank\_r\_id\_1d & r\_intraday\_\{t-1\} = adj\_close\_\{t-1\} /
+adj\_open\_\{t-1\} - 1 & prices.parquet: adjusted open, adjusted close &
+1 trading day & Yes \\
+rank\_ret\_cc\_5d & adj\_close\_\{t-1\} / adj\_close\_\{t-6\} - 1 &
+prices.parquet: adjusted close & 1 trading day & Yes \\
+rank\_ret\_cc\_20d & adj\_close\_\{t-1\} / adj\_close\_\{t-21\} - 1 &
+prices.parquet: adjusted close & 1 trading day & Yes \\
+rank\_ret\_cc\_60d & adj\_close\_\{t-1\} / adj\_close\_\{t-61\} - 1 &
+prices.parquet: adjusted close & 1 trading day & Yes \\
+rank\_vol20 & annualised rolling std of close-to-close returns over 20
+sessions, shifted 1 day & prices.parquet: adjusted close & 1 trading day
+& Yes \\
+rank\_vol60 & annualised rolling std of close-to-close returns over 60
+sessions, shifted 1 day & prices.parquet: adjusted close & 1 trading day
+& Yes \\
+rank\_amihud20 & rolling mean over 20 sessions of abs(r\_close\_close) /
+dollar\_volume, shifted 1 day & prices.parquet: adjusted close, volume &
+1 trading day & Yes \\
+rank\_adv20\_log & log(1 + trailing 20-day average dollar volume),
+shifted 1 day & prices.parquet: adjusted close, volume & 1 trading day &
+Yes \\
+rank\_market\_cap\_log & log(1 + market\_cap\_\{t-1\}) & prices.parquet:
+market\_cap & 1 trading day & Yes \\
+rank\_piot\_norm\_lag1 & piot\_norm\_\{t-1\} & all\_data.parquet & 1
+trading day & Yes \\
+rank\_gross\_profit\_margin\_lag1 & gross\_profit\_margin\_\{t-1\} &
+all\_data.parquet & 1 trading day & Yes \\
+rank\_asset\_turnover\_ratio\_lag1 & asset\_turnover\_ratio\_\{t-1\} &
+all\_data.parquet & 1 trading day & Yes \\
+rank\_net\_debt\_to\_equity\_lag1 & net\_debt\_to\_equity\_\{t-1\} &
+all\_data.parquet & 1 trading day & Yes \\
+rank\_price\_to\_book\_lag1 & price\_to\_book\_\{t-1\} &
+all\_data.parquet & 1 trading day & Yes \\
+rank\_ev\_to\_ebit\_lag1 & ev\_to\_ebit\_\{t-1\} & all\_data.parquet & 1
+trading day & Yes \\
+rank\_sue\_lag1 & sue\_\{t-1\} & all\_data.parquet & 1 trading day &
+Yes \\
+rank\_deps\_lag1 & deps\_\{t-1\} & all\_data.parquet & 1 trading day &
+Yes \\
+rank\_reps1\_lag1 & reps1\_\{t-1\} & all\_data.parquet & 1 trading day &
+Yes \\
+rank\_repsf4\_lag1 & repsf4\_\{t-1\} & all\_data.parquet & 1 trading day
+& Yes \\
+rank\_final\_score\_lag1 & final\_score\_\{t-1\} &
+cheapness\_scores.parquet & 1 trading day & Yes \\
+rank\_score\_velocity\_lag1 & score\_velocity\_\{t-1\} &
+cheapness\_scores.parquet & 1 trading day & Yes \\
+rank\_momentum\_score\_lag1 & momentum\_score\_\{t-1\} &
+cheapness\_scores.parquet & 1 trading day & Yes \\
+rank\_dsi\_lag1 & dsi\_\{t-1\}; daily short-interest proxy after
+publication/vendor lag already in source & all\_data.parquet & 1 trading
+day after source availability & Yes, if source obeys Section 2.1.3 lag
+convention \\
+rank\_dtcn\_lag1 & dtcn\_\{t-1\}; daily days-to-cover proxy after
+publication/vendor lag already in source & all\_data.parquet & 1 trading
+day after source availability & Yes, if source obeys Section 2.1.3 lag
+convention \\
+rank\_ddtcn\_lag1 & ddtcn\_\{t-1\}; lagged change/stress proxy after
+publication/vendor lag already in source & all\_data.parquet & 1 trading
+day after source availability & Yes, if source obeys Section 2.1.3 lag
+convention \\
+rank\_industry\_return\_lag1 & industry\_return\_\{t-1\} &
+all\_data.parquet & 1 trading day & Yes \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/report\_ready/feature\_inventory.csv}.
+
+\hypertarget{3-universe-construction-and-capacity-filters}{%
+\subsection{3. Universe Construction and Capacity
+Filters}\label{3-universe-construction-and-capacity-filters}}
+
+The final universe, eligibility filters, basket rule, and participation
+cap are frozen in
+\texttt{outputs/report\_ready/final\_strategy\_config.md}. The final
+report treats these implementation choices as part of the strategy
+definition, because the overnight signal is only investable if it can be
+traded near the close and open with realistic size.
+
+The final capacity constraint is a 5\% ADV20 participation cap.
+Positions are clipped against the cap before final weights and dollar
+positions are recorded. The frozen positions files include
+\texttt{adv20\_dollar}, \texttt{participation\_rate},
+\texttt{cap\_dollar}, and \texttt{cap\_binding\_flag}, which allows the
+reported exposure reduction to be checked from position-level evidence
+rather than from summary claims alone.
+
+\hypertarget{universe-evolution}{%
+\subsubsection{Universe Evolution}\label{universe-evolution}}
+
+\begin{longtable}[]{@{}rrllr@{}}
+\toprule
+Year & Universe Count & Ref Date & Median Year Start Mcap & Mid Year
+Exits \\
+\midrule
+\endhead
+2010 & 986 & 2009-12-31 & \$2.46bn & 0 \\
+2011 & 986 & 2010-12-31 & \$3.25bn & 0 \\
+2012 & 988 & 2011-12-30 & \$3.25bn & 0 \\
+2013 & 988 & 2012-12-31 & \$3.86bn & 0 \\
+2014 & 987 & 2013-12-31 & \$5.42bn & 0 \\
+2015 & 986 & 2014-12-31 & \$6.07bn & 0 \\
+2016 & 987 & 2015-12-31 & \$6.06bn & 0 \\
+2017 & 988 & 2016-12-30 & \$7.07bn & 0 \\
+2018 & 988 & 2017-12-29 & \$8.73bn & 0 \\
+2019 & 988 & 2018-12-31 & \$7.47bn & 0 \\
+2020 & 989 & 2019-12-31 & \$9.62bn & 0 \\
+2021 & 990 & 2020-12-31 & \$11.62bn & 0 \\
+2022 & 988 & 2021-12-31 & \$14.16bn & 0 \\
+2023 & 988 & 2022-12-30 & \$11.50bn & 0 \\
+2024 & 989 & 2023-12-29 & \$13.06bn & 0 \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/universe\_summary.csv}.
+
+\hypertarget{eligibility-exclusions}{%
+\subsubsection{Eligibility Exclusions}\label{eligibility-exclusions}}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Eligibility reason & Stock-days \\
+\midrule
+\endhead
+OK & 3,194,145 \\
+MCAP\_FAIL & 1,596,321 \\
+ADV\_FAIL & 513,267 \\
+EARN\_WINDOW & 116,925 \\
+PRICE\_FAIL & 26,307 \\
+VOL\_FAIL & 22,458 \\
+DATA\_FAIL & 1,000 \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/eligibility\_summary.csv}.
+
+\hypertarget{capacity-evidence}{%
+\subsubsection{Capacity Evidence}\label{capacity-evidence}}
+
+\begin{longtable}[]{@{}llrllllll@{}}
+\toprule
+AUM & Avg gross exposure used & Cap-binding days & Fraction cap-binding
+days & Avg per-stock abs position & Max per-stock abs position & Avg
+participation & Max participation & Position-days at cap \\
+\midrule
+\endhead
+\$50m & 99.90\% & 3464 & 91.79\% & \$1.00m & \$7.40m & 1.99\% & 5.00\% &
+16.16\% \\
+\$250m & 70.43\% & 3773 & 99.97\% & \$3.53m & \$98.01m & 3.76\% & 5.00\%
+& 61.68\% \\
+\$1bn & 22.82\% & 3773 & 99.97\% & \$4.58m & \$414.68m & 3.96\% & 5.00\%
+& 67.87\% \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/report\_ready/position\_capacity\_summary.csv}.
+
+The capacity table is one of the most important controls in the report.
+At 250M, the strategy is not simply choosing to run lower risk. It is
+capacity constrained: cap-binding days are nearly the whole sample,
+average gross exposure used is 70.43\%, and 61.68\% of position-days sit
+at the cap. At 1B, average gross exposure drops to 22.82\% and 67.87\%
+of position-days are capped. That explains why the 1B result is much
+weaker even though the underlying ranking signal remains the same.
+
+The frozen outputs report fixed auction slippage and realized
+participation, but do not export a separate square-root market-impact
+estimate at the 5\% cap. The report therefore does not introduce a new
+impact model. This limitation is listed in
+\texttt{outputs/report\_ready/report\_missing\_items.md}.
+
+\hypertarget{4-borrow-proxy-and-short-leg-treatment}{%
+\subsection{4. Borrow Proxy and Short-Leg
+Treatment}\label{4-borrow-proxy-and-short-leg-treatment}}
+
+The short leg is not treated as free. The final strategy applies tiered
+borrow costs based on the hard-to-borrow proxy documented in
+\texttt{outputs/report\_ready/borrow\_proxy\_methodology.md}. The proxy
+uses short-interest and borrow-stress style variables from the processed
+data. The final implementation applies borrow cost tiers to short
+positions; it does not hard-exclude short candidates during selection.
+
+The hard-to-borrow proxy is deterministic and uses lagged short-interest
+stress fields from the point-in-time panel. Tier A is the default borrow
+tier at 40 bps per annum. Tier B applies when
+\texttt{dsi\_lag1\ \textgreater{}=\ 0.08}, or
+\texttt{dtcn\_lag1\ \textgreater{}=\ 5.0}, or
+\texttt{ddtcn\_lag1\ \textgreater{}=\ 1.0}, and is charged at 200 bps
+per annum. Tier C applies when
+\texttt{dsi\_lag1\ \textgreater{}=\ 0.15}, or
+\texttt{dtcn\_lag1\ \textgreater{}=\ 10.0}, or both
+\texttt{dsi\_lag1\ \textgreater{}=\ 0.10} and
+\texttt{ddtcn\_lag1\ \textgreater{}=\ 1.5}, and is charged at 800 bps
+per annum. Borrow is charged daily on short notional as
+\texttt{borrow\_rate\_annual\ /\ 252}. Source:
+\texttt{outputs/report\_ready/borrow\_proxy\_methodology.md}.
+
+\begin{longtable}[]{@{}llrl@{}}
+\toprule
+Borrow tier & Proxy threshold & Annual borrow rate & Final treatment \\
+\midrule
+\endhead
+A & Default tier when Tier B/C thresholds are not met & 40 bps & Cost
+applied to short notional \\
+B & \texttt{dsi\_lag1\ \textgreater{}=\ 0.08}, or
+\texttt{dtcn\_lag1\ \textgreater{}=\ 5.0}, or
+\texttt{ddtcn\_lag1\ \textgreater{}=\ 1.0} & 200 bps & Cost applied to
+short notional \\
+C & \texttt{dsi\_lag1\ \textgreater{}=\ 0.15}, or
+\texttt{dtcn\_lag1\ \textgreater{}=\ 10.0}, or both
+\texttt{dsi\_lag1\ \textgreater{}=\ 0.10} and
+\texttt{ddtcn\_lag1\ \textgreater{}=\ 1.5} & 800 bps & Cost applied to
+short notional \\
+\bottomrule
+\end{longtable}
+
+The final audit reports that 94,035 raw short position-days were
+observed, of which 57,039 are Tier B or Tier C. This is 60.66\% of raw
+short position-days. The same file reports that the fraction of raw
+short signal affected by borrow treatment is 0.00\% because borrow
+treatment is cost-only in the final configuration, not a selection
+filter. Source:
+\texttt{outputs/report\_ready/short\_signal\_affected\_by\_borrow.csv}.
+
+\hypertarget{borrow-cost-degradation}{%
+\subsubsection{Borrow Cost Degradation}\label{borrow-cost-degradation}}
+
+\begin{longtable}[]{@{}lrrrrrr@{}}
+\toprule
+AUM & Gross Sharpe & Commission drag & Auction slippage drag & Borrow
+drag & Net Sharpe & Avg daily borrow bps \\
+\midrule
+\endhead
+\$50m & 3.071 & 0.493 & 1.48 & 0.249 & 0.85 & 0.503 \\
+\$250m & 2.427 & 0.361 & 1.084 & 0.17 & 0.811 & 0.331 \\
+\$1bn & 1.239 & 0.218 & 0.654 & 0.1 & 0.266 & 0.105 \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/report\_ready/borrow\_sharpe\_degradation.csv}.
+
+\hypertarget{borrow-tier-summary}{%
+\subsubsection{Borrow Tier Summary}\label{borrow-tier-summary}}
+
+\begin{longtable}[]{@{}llrlllr@{}}
+\toprule
+AUM & Tier & Short position-days & Share & Avg short notional & Total
+borrow cost & Avg daily borrow bps \\
+\midrule
+\endhead
+\$50m & A & 36996 & 39.34\% & \$1.10m & \$645.08k & 0.503 \\
+\$50m & B & 36226 & 38.52\% & \$948.06k & \$2.73m & 0.503 \\
+\$50m & C & 20813 & 22.13\% & \$926.10k & \$6.12m & 0.503 \\
+\$250m & A & 36996 & 39.34\% & \$4.02m & \$2.36m & 0.331 \\
+\$250m & B & 36226 & 38.52\% & \$3.40m & \$9.78m & 0.331 \\
+\$250m & C & 20813 & 22.13\% & \$2.89m & \$19.10m & 0.331 \\
+\$1bn & A & 36996 & 39.34\% & \$5.48m & \$3.22m & 0.105 \\
+\$1bn & B & 36226 & 38.52\% & \$4.16m & \$11.97m & 0.105 \\
+\$1bn & C & 20813 & 22.13\% & \$3.70m & \$24.44m & 0.105 \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/report\_ready/borrow\_tier\_summary.csv}.
+
+The borrow table is deliberately reported in position-days, not just
+dollars, because a strategy can hide borrow risk by netting costs into
+aggregate returns. At 250M, Tier A accounts for 39.34\% of short
+position-days, Tier B for 38.52\%, and Tier C for 22.13\%. Tier C has
+fewer position-days than the other tiers but a larger annualized cost
+assumption, so it accounts for a material share of total borrow cost.
+
+The external validation limitation is also explicit. No independent
+locate-fee or borrow-fee file is present in the frozen outputs, so the
+report cannot claim external validation of the proxy thresholds. It
+reports the proxy definition, thresholds, tier shares, and cost
+consequences instead. This is a sceptical rather than promotional
+treatment of the short leg.
+
+\hypertarget{5-alpha-model-and-target-engineering}{%
+\subsection{5. Alpha Model and Target
+Engineering}\label{5-alpha-model-and-target-engineering}}
+
+The final model is a cross-sectional overnight alpha model. Its key
+design choice is the promoted target:
+\texttt{overnight\_next\ /\ (vol20\ /\ sqrt(252))}. This target is
+economically interpretable. Raw overnight returns can be dominated by
+volatile stocks; volatility scaling rewards names whose expected
+overnight opportunity is large relative to their recent close-to-close
+risk. The change is therefore a target-engineering decision, not a new
+data source.
+
+The final feature set remains unchanged from the baseline. This matters
+for look-ahead control. If the Sharpe improvement had come from adding
+new features, the audit burden would be wider. Here the main question is
+narrower: whether the denominator in the transformed target is
+point-in-time valid. The dedicated audit passed that question.
+
+The final 250M IC mean is 2.82\% with an IC t-stat of 9.465. The
+baseline experiment-harness IC mean is 2.73\% with an IC t-stat of
+8.363. Source:
+\texttt{outputs/report\_ready/final\_candidate\_comparison.csv}. The
+improvement is not only a realized volatility artifact; the ranking
+statistic is slightly stronger as well. However, the report does not
+overstate this. The realized performance improvement is larger than the
+IC improvement, indicating that risk scaling and realized portfolio
+volatility also contribute.
+
+\hypertarget{feature-ablation-at-250m}{%
+\subsubsection{Feature Ablation at
+250M}\label{feature-ablation-at-250m}}
+
+\begin{longtable}[]{@{}lllrllrlrl@{}}
+\toprule
+Variant & Removed group & IC mean & IC t-stat & Net annual return & Net
+vol & Net Sharpe & Max DD & Avg turnover & Avg gross exposure \\
+\midrule
+\endhead
+full\_model & none & 2.82\% & 9.465 & 3.93\% & 4.90\% & 0.811 & -10.19\%
+& 1.409 & 70.43\% \\
+remove\_return/reversal & return/reversal & 0.79\% & 2.106 & -4.80\% &
+5.02\% & -0.954 & -55.66\% & 1.011 & 50.53\% \\
+remove\_risk/liquidity/size & risk/liquidity/size & 2.85\% & 11.364 &
+4.49\% & 4.82\% & 0.934 & -8.48\% & 1.605 & 80.27\% \\
+remove\_fundamental/value/quality & fundamental/value/quality & 2.92\% &
+9.784 & 4.14\% & 4.75\% & 0.878 & -10.38\% & 1.382 & 69.10\% \\
+remove\_earnings/revision & earnings/revision & 2.75\% & 9.177 & 4.05\%
+& 4.85\% & 0.841 & -10.19\% & 1.407 & 70.34\% \\
+remove\_short-interest/borrow-stress & short-interest/borrow-stress &
+2.85\% & 9.52 & 4.99\% & 5.22\% & 0.959 & -11.32\% & 1.474 & 73.69\% \\
+remove\_industry-return & industry-return & 2.82\% & 9.469 & 3.84\% &
+4.90\% & 0.795 & -10.19\% & 1.408 & 70.40\% \\
+\bottomrule
+\end{longtable}
+
+Source: \texttt{outputs/feature\_ablation\_summary.csv} and
+\texttt{outputs/report\_ready/feature\_ablation\_audit.md}.
+
+The ablation audit is mixed, which is useful. Removing return/reversal
+features sharply damages performance: the 250M net Sharpe falls from
+0.811 to -0.954. That is the clearest evidence that the core alpha is an
+overnight return/reversal mechanism. Removing risk/liquidity/size and
+short-interest/borrow-stress improves 250M Sharpe in the frozen ablation
+table, so the report should not claim that every feature group adds
+standalone alpha. This does not automatically make those groups useless:
+some variables can act as risk, capacity, crowding, turnover, or
+cost-control information rather than pure alpha predictors. The right
+conclusion is narrower: return/reversal is the dominant alpha source,
+while the remaining groups have mixed incremental value under the frozen
+model.
+
+The final strategy was not retuned during ablation. The ablation is
+therefore an audit of feature dependence under the frozen modelling
+setup, not a fresh search over hyperparameters.
+
+\hypertarget{6-portfolio-construction-and-cost-model}{%
+\subsection{6. Portfolio Construction and Cost
+Model}\label{6-portfolio-construction-and-cost-model}}
+
+The final strategy selects a daily long and short basket according to
+the frozen basket selection rule in
+\texttt{outputs/report\_ready/final\_strategy\_config.md}. The positions
+are held overnight from the decision close to the next open. The final
+positions files are exported for 50M, 250M, and 1B AUM and include the
+fields needed to audit score, target weight, final clipped weight,
+dollar position, cap binding, gross PnL, commission, slippage, borrow
+cost, net PnL, and borrow tier.
+
+The cost model includes commission, auction slippage, and borrow. This
+report treats auction slippage as an essential part of the close/open
+implementation, not as a sensitivity to be added later. At 250M, gross
+Sharpe is 2.427, but commission drag is 0.361, auction slippage drag is
+1.084, and borrow drag is 0.170, leaving net Sharpe of 0.811. Source:
+\texttt{outputs/report\_ready/borrow\_sharpe\_degradation.csv}.
+
+The same cost table shows why gross results are misleading. At 50M gross
+Sharpe is 3.071 and net Sharpe is 0.850; at 1B gross Sharpe is 1.239 and
+net Sharpe is 0.266. Costs are not a cosmetic adjustment; they decide
+whether the strategy is economically interesting.
+
+\hypertarget{7-empirical-results}{%
+\subsection{7. Empirical Results}\label{7-empirical-results}}
+
+At the chosen reporting size of 250M, the final strategy has a net
+annual return of 3.93\%, net volatility of 4.90\%, net Sharpe of 0.811,
+and max drawdown of -10.19\%. These are the headline numbers in
+\texttt{outputs/performance\_summary.csv} and
+\texttt{outputs/report\_ready/final\_reproduction\_log.md}.
+
+The result is credible but not grand. A 3.93\% annual return is not
+enough to survive careless implementation or inflated fees. It becomes
+interesting because volatility is controlled, because the drawdown is
+materially smaller than the archived baseline comparison, and because
+the result survives cost and capacity constraints at 250M. It is still
+not a claim of live profitability in 2025-2026. Those years are held out
+for marker evaluation.
+
+\hypertarget{year-by-year-final-results-at-250m}{%
+\subsubsection{Year-by-Year Final Results at
+250M}\label{year-by-year-final-results-at-250m}}
+
+\begin{longtable}[]{@{}rllrlll@{}}
+\toprule
+Year & Annual return & Annual vol & Annual Sharpe & Max DD & IC mean &
+Avg gross exposure \\
+\midrule
+\endhead
+2010 & -10.09\% & 3.42\% & -3.094 & -10.19\% & -3.48\% & 42.46\% \\
+2011 & 21.39\% & 5.63\% & 3.474 & -2.08\% & 6.22\% & 67.54\% \\
+2012 & 6.70\% & 2.80\% & 2.333 & -1.68\% & 4.67\% & 56.93\% \\
+2013 & 5.61\% & 2.38\% & 2.307 & -1.17\% & 7.22\% & 64.02\% \\
+2014 & 2.57\% & 3.66\% & 0.712 & -5.01\% & 4.23\% & 80.35\% \\
+2015 & 1.58\% & 2.31\% & 0.691 & -1.73\% & 3.75\% & 57.44\% \\
+2016 & 1.13\% & 1.97\% & 0.578 & -1.83\% & 4.21\% & 38.38\% \\
+2017 & -0.46\% & 1.38\% & -0.331 & -1.60\% & 2.79\% & 42.84\% \\
+2018 & 2.82\% & 3.01\% & 0.939 & -1.99\% & 2.17\% & 69.11\% \\
+2019 & 5.85\% & 3.53\% & 1.63 & -1.38\% & 2.98\% & 83.78\% \\
+2020 & -3.15\% & 9.23\% & -0.3 & -9.08\% & 0.81\% & 86.51\% \\
+2021 & 2.70\% & 5.47\% & 0.515 & -5.70\% & -2.11\% & 77.36\% \\
+2022 & 28.21\% & 8.10\% & 3.111 & -2.86\% & 6.29\% & 95.46\% \\
+2023 & 3.99\% & 5.95\% & 0.687 & -5.88\% & 2.82\% & 95.42\% \\
+2024 & -4.13\% & 6.17\% & -0.652 & -8.30\% & -0.29\% & 98.81\% \\
+\bottomrule
+\end{longtable}
+
+Source:
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_yearly.csv}.
+
+The final strategy has positive annual returns in 11 out of 15 calendar
+years in the frozen 250M yearly table. Its weakest year is 2010, with
+annual return -10.09\%. Its strongest year is 2022, with annual return
+28.21\%. These figures come from
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_yearly.csv}.
+
+\hypertarget{quantstats-tear-sheet}{%
+\subsubsection{QuantStats Tear Sheet}\label{quantstats-tear-sheet}}
+
+A QuantStats HTML tear sheet for the final 250M strategy is saved at
+\texttt{outputs/quantstats\_250m.html}. Figure caption for any use of
+that tear sheet: AUM = 250M; basket selection rule = frozen final basket
+rule in \texttt{outputs/report\_ready/final\_strategy\_config.md};
+participation cap = 5\% ADV20; cost schedule = commission, auction
+slippage, and tiered borrow costs from the frozen final configuration;
+target version = volatility-scaled overnight return.
+
+\hypertarget{8-robustness-feature-ablation-and-stress-windows}{%
+\subsection{8. Robustness, Feature Ablation, and Stress
+Windows}\label{8-robustness-feature-ablation-and-stress-windows}}
+
+The stress-window analysis compares the archived logged baseline and the
+final volatility-scaled target in three difficult windows: late 2018,
+2020 Q1, and the 2022 drawdown. The final result is not uniformly better
+on every metric, which is important. In late 2018 the final strategy has
+a positive net return but a slightly worse max drawdown than the
+baseline. In 2020 Q1 and 2022, it is materially stronger in the frozen
+outputs.
+
+\hypertarget{stress-windows-at-250m}{%
+\subsubsection{Stress Windows at 250M}\label{stress-windows-at-250m}}
+
+\begin{longtable}[]{@{}lllrllrr@{}}
+\toprule
+Window & Strategy & Net return & Annualized Sharpe & Max DD & Avg gross
+exposure & Avg turnover & Days \\
+\midrule
+\endhead
+covid\_q1\_2020 & Baseline & -2.45\% & -0.743 & -6.77\% & 54.99\% & 1.1
+& 62 \\
+covid\_q1\_2020 & Final & 2.24\% & 1.02 & -3.05\% & 87.97\% & 1.759 &
+62 \\
+drawdown\_2022 & Baseline & -7.16\% & -0.788 & -13.36\% & 93.64\% &
+1.873 & 251 \\
+drawdown\_2022 & Final & 28.09\% & 3.111 & -2.86\% & 95.46\% & 1.909 &
+251 \\
+late\_2018 & Baseline & -0.95\% & -2.093 & -1.08\% & 30.89\% & 0.618 &
+63 \\
+late\_2018 & Final & 0.17\% & 0.235 & -1.30\% & 67.95\% & 1.359 & 63 \\
+\bottomrule
+\end{longtable}
+
+Source:
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_stress\_windows.csv}.
+
+The stress table supports promotion, but not triumphalism. The 2022
+window is particularly strong for the final strategy, with 28.09\% net
+return and 3.111 annualized Sharpe. That helps the full-sample result. A
+sceptical marker should ask whether that is a single lucky sub-period.
+The year-by-year table partially addresses this: the final strategy is
+positive in 11 of 15 years, but not in every year, and 2010 remains a
+materially negative year.
+
+The feature ablation table provides a different robustness check. The
+strategy depends heavily on return/reversal information. It is less
+clearly helped by every other group. This supports a focused economic
+interpretation rather than a broad claim that all available data sources
+are equally useful.
+
+\hypertarget{9-limitations-and-held-out-evaluation-risk}{%
+\subsection{9. Limitations and Held-Out Evaluation
+Risk}\label{9-limitations-and-held-out-evaluation-risk}}
+
+The main limitations are capacity, cost realism, borrow validation, and
+future-period uncertainty.
+
+Capacity is the cleanest limitation because it is measured directly. At
+1B, the strategy cannot deploy enough capital under the 5\% ADV20 cap.
+Average gross exposure used is only 22.82\%, and the net Sharpe is
+0.266. The negative intuition is not that the alpha disappears
+completely; it is that the tradable expression becomes too constrained.
+A rank signal with insufficient executable notional is not a scalable
+portfolio.
+
+Costs are also central. The final 250M gross Sharpe of 2.427 would look
+impressive if shown alone. Net Sharpe is 0.811 after commission, auction
+slippage, and borrow. The difference is the implementation reality of
+trading a close-to-open basket.
+
+Borrow honesty is incomplete but disclosed. The final output includes
+tiered borrow costs and short-position tier shares. It does not include
+external borrow-fee validation, and the strategy does not change
+selection based on borrow tier. That means hard-to-borrow exposure
+affects net returns through cost, not through avoided trades.
+
+Short-interest timing is controlled at the processed-panel level, but
+the repository does not include raw publication-date evidence. The final
+report therefore avoids claiming more than the files support.
+
+Finally, 2025-2026 is held out for marker evaluation. The report does
+not claim that the final 2010-2024 result necessarily persists. The
+correct interpretation is narrower: under the frozen data cutoff and
+final implementation, the volatility-scaled target is a point-in-time
+valid improvement over the archived baseline.
+
+\hypertarget{10-section-7-sceptical-marker-questions}{%
+\subsection{10. Section 7 Sceptical-Marker
+Questions}\label{10-section-7-sceptical-marker-questions}}
+
+\textbf{Look-ahead.} The promoted target passed a point-in-time audit.
+\texttt{vol20} is trailing and shifted by one trading day; the feature
+set is unchanged; and the final reproduction log confirms the cached
+final panel maxes out at 2024-12-31. Earnings and short-interest audits
+provide hand-checkable examples. The remaining short-interest limitation
+is source-panel publication timing, disclosed in
+\texttt{outputs/report\_ready/report\_missing\_items.md}.
+
+\textbf{Statistical robustness.} The 250M IC mean is 2.82\% with t-stat
+9.465. The final strategy is positive in 11 of 15 calendar years.
+Feature ablation shows the model is materially dependent on
+return/reversal features; it is not robust to removing that group. The
+stress-window results are favorable in 2020 Q1 and 2022 but less clean
+in late 2018.
+
+\textbf{Capacity and execution honesty.} The report shows 50M, 250M, and
+1B AUM. The 5\% ADV20 cap is enforced and exported at position level.
+The 1B result is weak because exposure cannot be deployed under the cap.
+Auction slippage is the largest Sharpe drag at 250M and is reported
+separately.
+
+\textbf{Borrow honesty.} The report includes tiered borrow costs,
+borrow-tier position-day shares, and gross-to-net Sharpe degradation. It
+also states that external borrow-fee validation is not present and that
+borrow treatment is cost-only rather than a hard exclusion.
+
+\textbf{Reporting integrity.} The original baseline is archived, the
+final strategy is frozen, final outputs are generated under
+\texttt{outputs/} and \texttt{outputs/report\_ready/}, and
+reproducibility is documented.
+\texttt{outputs/report\_ready/final\_reproduction\_log.md} records that
+\texttt{make\ reproduce} and \texttt{make\ test} passed, with 13 tests
+passing.
+
+\hypertarget{11-conclusion}{%
+\subsection{11. Conclusion}\label{11-conclusion}}
+
+The final strategy should be presented as a disciplined improvement over
+the baseline, not as a discovered magic formula. The promoted target is
+economically sensible and point-in-time valid: it ranks overnight
+opportunities by expected return per unit of recent realized volatility.
+At 250M, the final net Sharpe of 0.811 is materially higher than the
+archived baseline comparison and the max drawdown is materially smaller.
+
+The strategy is still capacity limited. It is most credible around the
+50M to 250M scale and becomes weak at 1B under the 5\% ADV20 cap. It is
+also highly sensitive to execution costs, especially auction slippage.
+These caveats are not side notes; they are part of the final conclusion.
+
+The recommended final submission is therefore the frozen
+volatility-scaled overnight return strategy, with 2025-2026 left
+untouched for external evaluation.
+
+\hypertarget{appendix-a-frozen-final-configuration-crosswalk}{%
+\subsection{Appendix A. Frozen Final Configuration
+Crosswalk}\label{appendix-a-frozen-final-configuration-crosswalk}}
+
+The following configuration table is copied from the frozen strategy
+configuration rather than reconstructed from code. Its purpose is to
+make the submitted report auditable without asking the marker to infer
+the strategy settings from multiple files.
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Configuration item & Frozen setting & Source \\
+\midrule
+\endhead
+Final strategy name &
+\texttt{E\_target\_transform\ /\ volatility\_scaled\_overnight\_return}
+& \texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Target & \texttt{volatility\_scaled\_overnight\_return} &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Target definition & \texttt{overnight\_next\ /\ (vol20\ /\ sqrt(252))} &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Overnight return definition &
+\texttt{adj\_open\_(t+1)\ /\ adj\_close\_t\ -\ 1} &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Volatility denominator & trailing 20-day close-to-close volatility,
+annualised, shifted by one trading day &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Feature set & unchanged from the original baseline point-in-time feature
+set & \texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Universe & annual top-1000 US common-equity universe by market
+capitalisation &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Universe freeze & each year uses the last trading day of the previous
+year & \texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Minimum history & 252 price observations &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Minimum price & \$5.00 &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Minimum ADV20 & \$10,000,000 &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Volatility band & 5\% to 120\% annualised &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Earnings exclusion & +/- 1 trading day &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Long basket & top 3\% of eligible names by alpha score &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Short basket & bottom 3\% of eligible names by alpha score &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Minimum basket size & 15 names per side &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Weighting & equal weighting within each side, subject to capacity caps &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Dollar neutrality & long and short books matched after capacity sizing &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Participation cap & 5.0\% of ADV20 per name &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+AUM levels & 50M, 250M, 1B &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Commission & 0.5 bps per leg, 1.0 bps round trip &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Auction slippage & 1.5 bps per leg, 3.0 bps round trip &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Non-borrow round-trip cost & 4.0 bps on notional turnover &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Borrow Tier A & 40 bps per annum &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Borrow Tier B & 200 bps per annum &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Borrow Tier C & 800 bps per annum &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Borrow application & charged daily on short notional as annual rate /
+252 & \texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Hard borrow exclusion & none in final strategy &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Start date & 2010-01-01 &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Development cutoff & 2024-12-31 &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Random seed & 42; deterministic implementation &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+\bottomrule
+\end{longtable}
+
+This table is also the caption disclosure standard for any final
+strategy figure. Where a figure is strategy-specific, the caption must
+identify AUM, basket rule, 5\% ADV20 participation cap,
+commission/slippage/borrow cost schedule, and volatility-scaled target
+version.
+
+\hypertarget{appendix-b-coursework-brief-crosswalk}{%
+\subsection{Appendix B. Coursework Brief
+Crosswalk}\label{appendix-b-coursework-brief-crosswalk}}
+
+This crosswalk states where the report answers the coursework brief. It
+is included to reduce ambiguity for marking: each answer is tied to a
+frozen output file, not a later calculation.
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Brief area & Report answer & Frozen source files \\
+\midrule
+\endhead
+Section 2: return construction & Close-to-open return uses adjusted
+close at day \texttt{t} and adjusted open at day \texttt{t+1};
+reconciliation reports zero failures under the exported tolerance. &
+\texttt{outputs/return\_reconciliation\_summary.csv} \\
+Section 2: point-in-time controls & Volatility denominator is trailing
+and shifted; target transformation changes only the label, not features.
+&
+\texttt{outputs/report\_ready/volatility\_scaled\_target\_point\_in\_time\_audit.md},
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Section 2: earnings timing & AMC, BMO, and same-day timing examples are
+exported with event date, strategy trading date, excluded decision
+dates, rule, and explanation. &
+\texttt{outputs/earnings\_timing\_examples.csv},
+\texttt{outputs/report\_ready/earnings\_timing\_audit.md} \\
+Section 2: short-interest timing & Processed short-interest proxies are
+shifted one trading day before strategy use; raw publication-date
+limitation is disclosed. &
+\texttt{outputs/short\_interest\_lag\_examples.csv},
+\texttt{outputs/report\_ready/short\_interest\_lag\_audit.md},
+\texttt{outputs/report\_ready/report\_missing\_items.md} \\
+Section 3: universe construction & Annual top-1000 universe is frozen
+from the prior year-end reference date; universe counts and median
+market cap are exported by year. &
+\texttt{outputs/universe\_summary.csv},
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Section 3: capacity filters & Minimum price, ADV20, volatility band,
+earnings window, and required data filters are stated; exclusion
+stock-days are exported by reason. &
+\texttt{outputs/eligibility\_summary.csv},
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Section 3: implementation capacity & 5\% ADV20 cap is enforced and
+audited through average exposure, cap-binding days, position size, and
+participation summaries. &
+\texttt{outputs/report\_ready/position\_capacity\_summary.csv},
+\texttt{outputs/positions\_50m.parquet},
+\texttt{outputs/positions\_250m.parquet},
+\texttt{outputs/positions\_1b.parquet} \\
+Section 4: borrow proxy & Borrow treatment is tiered cost rather than
+hard exclusion; tier rates, tier shares, and cost impact are reported. &
+\texttt{outputs/report\_ready/borrow\_proxy\_methodology.md},
+\texttt{outputs/report\_ready/borrow\_tier\_summary.csv},
+\texttt{outputs/report\_ready/borrow\_sharpe\_degradation.csv} \\
+Section 5: alpha target & Final target is risk-adjusted overnight
+return, not raw overnight return. &
+\texttt{outputs/report\_ready/final\_strategy\_config.md},
+\texttt{outputs/report\_ready/final\_strategy\_selection\_memo.md} \\
+Section 5: feature groups & Final feature set is unchanged; feature
+formulas and observability are exported. &
+\texttt{outputs/report\_ready/feature\_inventory.csv},
+\texttt{outputs/report\_ready/feature\_inventory.md} \\
+Section 5: IC evidence & IC mean and t-stat are reported for baseline
+and final candidate, and by calendar year in the yearly table. &
+\texttt{outputs/report\_ready/final\_candidate\_comparison.csv},
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_yearly.csv} \\
+Section 5: ablation & Final-strategy feature-group ablation is reported
+at 50M, 250M, and 1B, with the report emphasizing the 250M table. &
+\texttt{outputs/feature\_ablation\_summary.csv},
+\texttt{outputs/report\_ready/feature\_ablation\_audit.md} \\
+Section 6: portfolio construction & Long/short top-bottom 3\% baskets,
+minimum 15 names per side, equal side weighting, dollar neutrality, and
+cap clipping are documented. &
+\texttt{outputs/report\_ready/final\_strategy\_config.md} \\
+Section 6: cost model & Commission, auction slippage, and borrow costs
+are included; gross-to-net Sharpe degradation is decomposed. &
+\texttt{outputs/report\_ready/borrow\_sharpe\_degradation.csv},
+\texttt{outputs/performance\_summary.csv} \\
+Section 6: empirical results & Final 50M, 250M, and 1B performance is
+reported net of costs, with yearly and stress-window checks. &
+\texttt{outputs/performance\_summary.csv},
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_yearly.csv},
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_stress\_windows.csv} \\
+Section 7: look-ahead scepticism & Report answers target, feature,
+earnings, short-interest, and data-cutoff look-ahead risks separately. &
+\texttt{outputs/report\_ready/volatility\_scaled\_target\_point\_in\_time\_audit.md},
+\texttt{outputs/report\_ready/final\_reproduction\_log.md} \\
+Section 7: statistical robustness & Report uses IC, yearly results,
+ablation, and stress windows rather than only headline Sharpe. &
+\texttt{outputs/report\_ready/final\_candidate\_comparison.csv},
+\texttt{outputs/feature\_ablation\_summary.csv},
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_stress\_windows.csv} \\
+Section 7: execution honesty & Capacity cap and cost drag are presented
+as central limitations. &
+\texttt{outputs/report\_ready/position\_capacity\_summary.csv},
+\texttt{outputs/report\_ready/borrow\_sharpe\_degradation.csv} \\
+Section 7: borrow honesty & Borrow tier costs and the absence of
+external validation are both disclosed. &
+\texttt{outputs/report\_ready/borrow\_tier\_summary.csv},
+\texttt{outputs/report\_ready/report\_missing\_items.md} \\
+Section 7: reporting integrity & Baseline archived; final strategy
+frozen; reproduction and tests logged. &
+\texttt{outputs/baseline\_archive/baseline\_readme.md},
+\texttt{outputs/report\_ready/final\_reproduction\_log.md} \\
+\bottomrule
+\end{longtable}
+
+\hypertarget{appendix-c-frozen-output-manifest}{%
+\subsection{Appendix C. Frozen Output
+Manifest}\label{appendix-c-frozen-output-manifest}}
+
+The final report deliberately uses a narrow source set. The table below
+records how each source is used, so that the reported numbers can be
+traced without rerunning experiments.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Frozen artifact & Use in report \\
+\midrule
+\endhead
+\texttt{outputs/performance\_summary.csv} & final headline performance
+by AUM, including net return, volatility, Sharpe, drawdown, turnover,
+exposure, and IC \\
+\texttt{outputs/report\_ready/final\_strategy\_config.md} & final
+strategy definition, target, universe, eligibility filters, basket rule,
+costs, borrow, cutoff, and seed \\
+\texttt{outputs/report\_ready/final\_strategy\_selection\_memo.md} &
+promotion rationale and comparison logic for the final candidate \\
+\texttt{outputs/report\_ready/final\_strategy\_summary.md} &
+final-strategy summary language and headline context \\
+\texttt{outputs/baseline\_archive/baseline\_readme.md} & original
+baseline preservation and baseline Sharpe disclosure \\
+\texttt{outputs/report\_ready/final\_candidate\_comparison.csv} &
+baseline versus final candidate comparison across AUM levels \\
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_yearly.csv} &
+calendar-year performance and IC stability \\
+\texttt{outputs/report\_ready/baseline\_vs\_candidate\_stress\_windows.csv}
+& late 2018, 2020 Q1, and 2022 stress-window comparison \\
+\texttt{outputs/report\_ready/position\_capacity\_summary.csv} & average
+gross exposure, cap-binding days, per-name positions, participation, and
+capped position-days \\
+\texttt{outputs/report\_ready/borrow\_sharpe\_degradation.csv} &
+gross-to-net Sharpe degradation by commission, slippage, and borrow \\
+\texttt{outputs/report\_ready/borrow\_tier\_summary.csv} & short
+position-day counts, shares, notional, and borrow cost by tier \\
+\texttt{outputs/report\_ready/short\_signal\_affected\_by\_borrow.csv} &
+distinction between borrow cost impact and selection impact \\
+\texttt{outputs/feature\_ablation\_summary.csv} & final-strategy
+feature-group ablation results \\
+\texttt{outputs/report\_ready/feature\_ablation\_audit.md} & explanation
+of ablation method and no-retuning control \\
+\texttt{outputs/report\_ready/feature\_inventory.csv} & formula, data
+source, lag, and observability for features \\
+\texttt{outputs/earnings\_timing\_examples.csv} & hand-checkable AMC,
+BMO, and same-day earnings examples \\
+\texttt{outputs/short\_interest\_lag\_examples.csv} & hand-checkable
+short-interest lag examples \\
+\texttt{outputs/return\_reconciliation\_summary.csv} & adjusted price
+return reconciliation check \\
+\texttt{outputs/universe\_summary.csv} & annual universe size and
+year-start market-cap reference evidence \\
+\texttt{outputs/eligibility\_summary.csv} & exclusion stock-days by
+eligibility reason \\
+\texttt{outputs/report\_ready/final\_reproduction\_log.md} & Python
+version, commands, test result, final metrics, cutoff confirmation,
+baseline archive confirmation \\
+\texttt{outputs/quantstats\_250m.html} & final 250M tear sheet
+artifact \\
+\texttt{outputs/report\_ready/report\_missing\_items.md} & evidence
+limitations that are not filled with unsupported estimates \\
+\bottomrule
+\end{longtable}
+
+The manifest also sets a boundary on the report. If a claim is not
+supported by one of these frozen files, it is either omitted or
+disclosed as unavailable. This is why the report does not include
+external borrow-fee validation or a new market-impact model at the
+participation cap.
+
+\hypertarget{file-traceability}{%
+\subsection{File Traceability}\label{file-traceability}}
+
+\begin{itemize}
+\tightlist
+\item
+  Final strategy configuration:
+  \texttt{outputs/report\_ready/final\_strategy\_config.md}
+\item
+  Final headline performance: \texttt{outputs/performance\_summary.csv}
+\item
+  Baseline archive note:
+  \texttt{outputs/baseline\_archive/baseline\_readme.md}
+\item
+  Final comparison:
+  \texttt{outputs/report\_ready/final\_candidate\_comparison.csv}
+\item
+  Yearly comparison:
+  \texttt{outputs/report\_ready/baseline\_vs\_candidate\_yearly.csv}
+\item
+  Stress windows:
+  \texttt{outputs/report\_ready/baseline\_vs\_candidate\_stress\_windows.csv}
+\item
+  Capacity summary:
+  \texttt{outputs/report\_ready/position\_capacity\_summary.csv}
+\item
+  Borrow degradation:
+  \texttt{outputs/report\_ready/borrow\_sharpe\_degradation.csv}
+\item
+  Borrow tiers: \texttt{outputs/report\_ready/borrow\_tier\_summary.csv}
+\item
+  Feature ablation: \texttt{outputs/feature\_ablation\_summary.csv}
+\item
+  Timing audits: \texttt{outputs/earnings\_timing\_examples.csv},
+  \texttt{outputs/short\_interest\_lag\_examples.csv}
+\item
+  Reproducibility:
+  \texttt{outputs/report\_ready/final\_reproduction\_log.md}
+\item
+  Missing evidence list:
+  \texttt{outputs/report\_ready/report\_missing\_items.md}
+\end{itemize}
+
+\end{document}

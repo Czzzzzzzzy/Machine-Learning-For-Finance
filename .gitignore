@@ -1,0 +1,29 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.DS_Store
+.venv/
+venv/
+
+# Raw data - do not commit large coursework data
+data/
+
+# Large generated caches
+outputs/.strategy_experiment_*.parquet
+outputs/.phase2_*.parquet
+
+# Submission zip / archives
+*.zip
+
+# LaTeX temporary files
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Jupyter / temp
+.ipynb_checkpoints/
+*.tmp

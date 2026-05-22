@@ -1,0 +1,5 @@
+|               aum |   average_gross_exposure |   fraction_days_cap_binding |   net_sharpe |   avg_abs_per_stock_position |   max_abs_per_stock_position | position_source                                   |
+|------------------:|-------------------------:|----------------------------:|-------------:|-----------------------------:|-----------------------------:|:--------------------------------------------------|
+|   50000000.000000 |                 0.996909 |                    0.951245 |     0.269951 |                   MISSING    |                   MISSING    | Missing: positions were not exported for this AUM |
+|  250000000.000000 |                 0.578918 |                    0.999735 |     0.373744 |               2904287.069598 |              98014573.966590 | outputs/positions_250m.parquet                    |
+| 1000000000.000000 |                 0.172499 |                    0.999735 |    -0.073258 |                   MISSING    |                   MISSING    | Missing: positions were not exported for this AUM |

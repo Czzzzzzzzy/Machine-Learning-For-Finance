@@ -1,0 +1,4 @@
+aum,average_gross_exposure,fraction_days_cap_binding,net_sharpe,avg_abs_per_stock_position,max_abs_per_stock_position,position_source
+50000000.0,0.9969091308895082,0.9512453630100688,0.2699509647805634,,,Missing: positions were not exported for this AUM
+250000000.0,0.5789181443342307,0.999735029146794,0.373743916458338,2904287.06959827,98014573.96658951,outputs/positions_250m.parquet
+1000000000.0,0.1724985542399265,0.999735029146794,-0.0732577143819552,,,Missing: positions were not exported for this AUM

@@ -1,0 +1,536 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  10pt,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Final C2O Strategy Report},
+  pdfauthor={C2O Coursework Submission},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=0.8in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Final C2O Strategy Report}
+\author{C2O Coursework Submission}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{final-c2o-strategy-report}{%
+\section{Final C2O Strategy Report}\label{final-c2o-strategy-report}}
+
+\hypertarget{executive-summary}{%
+\subsection{Executive Summary}\label{executive-summary}}
+
+The promoted final strategy is \texttt{phase2\_g5\_05\_expanding}: a
+daily, dollar-neutral, close-to-open long-short strategy using the
+volatility-scaled overnight-return target with expanding-window
+transparent feature-weight estimation. The target is:
+
+\begin{verbatim}
+target = overnight_next / (vol20 / sqrt(252))
+\end{verbatim}
+
+\texttt{overnight\_next} is the next close-to-open return, and
+\texttt{vol20} is a trailing 20-day close-to-close volatility estimate
+shifted by one trading day. The feature set, basket rule, weighting,
+raw-score ranking, tiered borrow-cost treatment, transaction costs, 5\%
+ADV20 participation cap, close-to-open execution, and development cutoff
+remain unchanged from the previous final implementation.
+
+At the main headline AUM of 250M, the promoted final strategy earns
+\texttt{7.31\%} net annual return, \texttt{4.97\%} net volatility, net
+Sharpe \texttt{1.445}, and maximum drawdown \texttt{-10.19\%} over
+2010-2024. The previous 4-year rolling champion had 250M net Sharpe
+\texttt{0.811}; that value is now only a comparison point, not the final
+strategy.
+
+The controlled Phase 2 screen supports promotion: validation 2019-2022
+250M Sharpe improves to \texttt{2.279}, internal holdout 2023-2024
+remains positive at \texttt{0.620}, and full 2010-2024 Sharpe is
+\texttt{1.445}. The holdout result is much lower than validation, so the
+report treats this as controlled evidence of improvement, not a promise
+of live performance.
+
+2025-2026 remains held out for marker evaluation. No 2025+ data is used
+in development outputs.
+
+\hypertarget{final-strategy-configuration}{%
+\subsection{Final Strategy
+Configuration}\label{final-strategy-configuration}}
+
+\begin{itemize}
+\tightlist
+\item
+  Target: \texttt{volatility\_scaled\_overnight\_return}.
+\item
+  Target definition: \texttt{overnight\_next\ /\ (vol20\ /\ sqrt(252))}.
+\item
+  Training window: expanding. For each scored year Y, training starts at
+  2010-01-01 and ends before year Y begins.
+\item
+  Alpha learning: 50\% prior / 50\% learned transparent correlation
+  weights.
+\item
+  Basket: top/bottom 3\% of eligible names, with minimum 15 names per
+  side.
+\item
+  Weighting: equal weight within each side, subject to capacity caps.
+\item
+  Ranking: raw alpha score.
+\item
+  Short treatment: tiered borrow cost only; no hard short exclusion.
+\item
+  Execution: enter at day-t closing auction and exit at day-t+1 opening
+  auction.
+\item
+  Development cutoff: 2024-12-31.
+\end{itemize}
+
+Volatility scaling makes the training label risk-adjusted.
+Expanding-window training uses more historical overnight evidence as
+time progresses, which can stabilise transparent feature-weight
+estimation relative to a fixed 4-year rolling window. The performance
+improvement is not from cost relaxation, borrow relaxation,
+participation-cap relaxation, execution-timing changes, external data,
+intraday data, or new features.
+
+\hypertarget{headline-performance}{%
+\subsection{Headline Performance}\label{headline-performance}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.06}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.17}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.09}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.11}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.13}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.13}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.17}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.16}}@{}}
+\toprule
+AUM & Net annual return & Net vol & Net Sharpe & Max drawdown & Gross
+Sharpe & Avg gross exposure & Cap-binding days \\
+\midrule
+\endhead
+50M & 6.66\% & 5.03\% & 1.308 & -13.82\% & 3.539 & 99.92\% & 3547 \\
+250M & 7.31\% & 4.97\% & 1.445 & -10.19\% & 3.112 & 74.97\% & 3773 \\
+1B & 3.50\% & 2.69\% & 1.293 & -5.56\% & 2.321 & 25.35\% & 3773 \\
+\bottomrule
+\end{longtable}
+
+250M is the main headline AUM because it balances realised gross
+exposure, capacity use, and cost drag. 1B is included as a capacity
+boundary case.
+
+\hypertarget{champion-challenger-evidence}{%
+\subsection{Champion-Challenger
+Evidence}\label{champion-challenger-evidence}}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Metric & Previous champion & Promoted final \\
+\midrule
+\endhead
+Validation 2019-2022 250M net Sharpe & 1.107 & 2.279 \\
+Internal holdout 2023-2024 250M net Sharpe & 0.003 & 0.620 \\
+Full 2010-2024 250M net Sharpe & 0.811 & 1.445 \\
+Full 2010-2024 max drawdown & -10.19\% & -10.19\% \\
+Full 2010-2024 worst 12m return & -10.09\% & -10.09\% \\
+\bottomrule
+\end{longtable}
+
+The selected challenger passes the promotion audit. It improves
+validation Sharpe, remains positive in 2023-2024 internal holdout,
+improves full-period Sharpe, and does not worsen full-period maximum
+drawdown. The previous 0.811 Sharpe strategy is archived under
+\texttt{outputs/previous\_champion\_archive\_after\_phase2/} and
+\texttt{outputs/current\_champion\_archive/}.
+
+The 2023-2024 holdout Sharpe of \texttt{0.620} is materially lower than
+the validation Sharpe of \texttt{2.279}. This degradation is expected in
+a controlled screen and should be disclosed plainly.
+
+\hypertarget{costs-and-execution}{%
+\subsection{Costs And Execution}\label{costs-and-execution}}
+
+The cost model is unchanged:
+
+\begin{itemize}
+\tightlist
+\item
+  Commission: 0.5 bps per leg.
+\item
+  Auction slippage: 1.5 bps per leg.
+\item
+  Total non-borrow round-trip cost: 4.0 bps.
+\item
+  Borrow Tier A: 40 bps p.a.
+\item
+  Borrow Tier B: 200 bps p.a.
+\item
+  Borrow Tier C: 800 bps p.a.
+\item
+  Borrow daily charge: annual rate / 252.
+\item
+  Participation cap: 5\% ADV20.
+\end{itemize}
+
+Sharpe drag values below are Sharpe-unit drags, not percentages.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.06}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.14}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.17}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.15}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.13}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.12}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.21}}@{}}
+\toprule
+AUM & Gross Sharpe & Commission drag & Slippage drag & Borrow drag & Net
+Sharpe & Avg daily borrow bps \\
+\midrule
+\endhead
+50M & 3.539 & 0.501 & 1.503 & 0.227 & 1.308 & 0.451 \\
+250M & 3.112 & 0.378 & 1.137 & 0.152 & 1.445 & 0.301 \\
+1B & 2.321 & 0.233 & 0.704 & 0.091 & 1.293 & 0.098 \\
+\bottomrule
+\end{longtable}
+
+At 250M, gross Sharpe is \texttt{3.112} and net Sharpe is \texttt{1.445}
+after commission, auction slippage, and borrow costs. Auction slippage
+remains the largest explicit cost drag.
+
+\hypertarget{capacity}{%
+\subsection{Capacity}\label{capacity}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.06}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.18}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.16}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.24}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.17}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.20}}@{}}
+\toprule
+AUM & Avg gross exposure & Cap-binding days & Fraction cap-binding days
+& Avg participation & Position days at cap \\
+\midrule
+\endhead
+50M & 99.92\% & 3547 & 93.99\% & 2.04\% & 16.16\% \\
+250M & 74.97\% & 3773 & 99.97\% & 4.02\% & 66.29\% \\
+1B & 25.35\% & 3773 & 99.97\% & 4.29\% & 75.40\% \\
+\bottomrule
+\end{longtable}
+
+At 250M, average gross exposure used is \texttt{74.97\%}. At 1B it falls
+to \texttt{25.35\%}, which means the strategy cannot always deploy
+target risk under the fixed 5\% ADV20 cap. This is an honest capacity
+result rather than an implementation error.
+
+\hypertarget{borrow-treatment}{%
+\subsection{Borrow Treatment}\label{borrow-treatment}}
+
+The strategy uses provided point-in-time short-interest proxies plus a
+one-trading-day decision lag to assign borrow tiers. Borrow affects net
+returns through the explicit daily charge; it does not change the raw
+short selection in the promoted final strategy.
+
+\begin{longtable}[]{@{}lrr@{}}
+\toprule
+Tier & Annual rate & Daily charge \\
+\midrule
+\endhead
+A & 40 bps p.a. & annual rate / 252 \\
+B & 200 bps p.a. & annual rate / 252 \\
+C & 800 bps p.a. & annual rate / 252 \\
+\bottomrule
+\end{longtable}
+
+The report does not claim independent prime-broker borrow-fee
+validation. No direct securities-lending or locate-rate data is used.
+
+\hypertarget{feature-ablation-interpretation}{%
+\subsection{Feature Ablation
+Interpretation}\label{feature-ablation-interpretation}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.24}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.20}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.07}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.08}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.14}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.07}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.09}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.10}}@{}}
+\toprule
+Variant & Removed group & IC mean & IC t-stat & Net annual return & Net
+vol & Net Sharpe & Max drawdown \\
+\midrule
+\endhead
+full\_model & none & 0.029 & 9.934 & 7.31\% & 4.97\% & 1.445 &
+-10.19\% \\
+remove\_return/reversal & return/reversal & 0.011 & 3.333 & -3.62\% &
+3.26\% & -1.114 & -46.66\% \\
+remove\_risk/liquidity/size & risk/liquidity/size & 0.028 & 10.863 &
+5.89\% & 5.12\% & 1.144 & -8.24\% \\
+remove\_fundamental/value/quality & fundamental/value/quality & 0.03 &
+10.203 & 7.01\% & 4.90\% & 1.407 & -9.75\% \\
+remove\_earnings/revision & earnings/revision & 0.028 & 9.754 & 7.31\% &
+4.86\% & 1.477 & -10.19\% \\
+remove\_short-interest/borrow-stress & short-interest/borrow-stress &
+0.029 & 9.846 & 7.70\% & 5.00\% & 1.508 & -11.32\% \\
+remove\_industry-return & industry-return & 0.029 & 9.942 & 7.27\% &
+4.96\% & 1.442 & -10.19\% \\
+\bottomrule
+\end{longtable}
+
+The ablation is a dependence audit, not a retuning exercise.
+Return/reversal is the clearest alpha contributor: removing it lowers
+250M Sharpe from \texttt{1.445} to \texttt{-1.114}. Some other removals
+improve Sharpe, especially short-interest/borrow-stress and
+earnings/revision in this frozen no-retuning table. That should not be
+hidden. It means some variables may be acting as risk, capacity,
+crowding, turnover, or cost-control information rather than standalone
+alpha predictors.
+
+\hypertarget{robustness}{%
+\subsection{Robustness}\label{robustness}}
+
+\hypertarget{year-by-year-250m-results}{%
+\subsubsection{Year-By-Year 250M
+Results}\label{year-by-year-250m-results}}
+
+\begin{longtable}[]{@{}rllrll@{}}
+\toprule
+Year & Return & Vol & Sharpe & Max drawdown & Avg gross exposure \\
+\midrule
+\endhead
+2010 & -10.09\% & 3.42\% & -3.094 & -10.19\% & 42.46\% \\
+2011 & 21.39\% & 5.63\% & 3.474 & -2.08\% & 67.54\% \\
+2012 & 6.70\% & 2.80\% & 2.333 & -1.68\% & 56.93\% \\
+2013 & 5.61\% & 2.38\% & 2.307 & -1.17\% & 64.02\% \\
+2014 & 2.57\% & 3.66\% & 0.712 & -5.01\% & 80.35\% \\
+2015 & 3.91\% & 2.46\% & 1.575 & -1.06\% & 64.59\% \\
+2016 & 3.30\% & 2.33\% & 1.41 & -1.53\% & 47.44\% \\
+2017 & 1.64\% & 2.05\% & 0.804 & -1.35\% & 61.08\% \\
+2018 & 3.08\% & 3.84\% & 0.808 & -3.38\% & 81.30\% \\
+2019 & 12.30\% & 3.64\% & 3.206 & -1.03\% & 80.89\% \\
+2020 & 15.53\% & 9.57\% & 1.557 & -4.78\% & 88.45\% \\
+2021 & 10.83\% & 5.96\% & 1.755 & -5.47\% & 96.18\% \\
+2022 & 32.24\% & 8.02\% & 3.525 & -2.63\% & 99.23\% \\
+2023 & 9.70\% & 5.32\% & 1.768 & -4.85\% & 96.07\% \\
+2024 & -2.61\% & 5.73\% & -0.434 & -5.09\% & 98.07\% \\
+\bottomrule
+\end{longtable}
+
+\hypertarget{prepost-split}{%
+\subsubsection{Pre/Post Split}\label{prepost-split}}
+
+\begin{longtable}[]{@{}rllrll@{}}
+\toprule
+Subperiod & Return & Vol & Sharpe & Max drawdown & Avg gross exposure \\
+\midrule
+\endhead
+2010\_2016 & 4.42\% & 3.45\% & 1.273 & -10.19\% & 60.48\% \\
+2017\_2024 & 9.90\% & 5.99\% & 1.608 & -7.64\% & 87.66\% \\
+\bottomrule
+\end{longtable}
+
+\hypertarget{stress-windows}{%
+\subsubsection{Stress Windows}\label{stress-windows}}
+
+\begin{longtable}[]{@{}lllrll@{}}
+\toprule
+Window & Return & Vol & Sharpe & Max drawdown & Avg gross exposure \\
+\midrule
+\endhead
+late\_2018 & -2.35\% & 4.71\% & -0.482 & -1.92\% & 85.28\% \\
+2020\_q1 & 34.41\% & 10.78\% & 2.799 & -4.14\% & 88.95\% \\
+2022\_drawdown & 32.24\% & 8.02\% & 3.525 & -2.63\% & 99.23\% \\
+\bottomrule
+\end{longtable}
+
+\hypertarget{tail-and-serial-correlation}{%
+\subsubsection{Tail And Serial
+Correlation}\label{tail-and-serial-correlation}}
+
+At 250M, worst 3-month return is \texttt{-4.46\%}, worst 6-month return
+is \texttt{-7.31\%}, and worst 12-month return is \texttt{-10.09\%}. The
+top 5\% best days contribute \texttt{1.461} times total PnL, which means
+daily PnL is meaningfully concentrated. Lag-1 return autocorrelation is
+\texttt{-0.007}, so there is no large positive serial-correlation effect
+inflating annualised Sharpe in the final output.
+
+\hypertarget{point-in-time-controls}{%
+\subsection{Point-In-Time Controls}\label{point-in-time-controls}}
+
+The promotion audit passes the following controls:
+
+\begin{itemize}
+\tightlist
+\item
+  No 2025+ data is used; promoted cache max date is \texttt{2024-12-31}.
+\item
+  The target uses the future overnight return only as a historical
+  training label.
+\item
+  \texttt{vol20} is trailing and shifted before use in the target
+  denominator.
+\item
+  For each scored year, expanding-window training uses only dates
+  strictly before that year.
+\item
+  Cross-sectional ranks use only the same-day available cross-section.
+\item
+  Earnings filtering uses \texttt{strat\_trading\_date} and respects
+  AMC/BMO timing.
+\item
+  Short-interest fields use provided point-in-time proxies from the
+  coursework data package plus a one-trading-day decision lag.
+\item
+  No day-t close/high/low enters a decision-time feature unless shifted
+  appropriately.
+\end{itemize}
+
+\hypertarget{baseline-and-previous-champion}{%
+\subsection{Baseline And Previous
+Champion}\label{baseline-and-previous-champion}}
+
+The original baseline is preserved in
+\texttt{outputs/baseline\_archive/}. Its original 250M net Sharpe was
+approximately \texttt{0.374}; the logged experiment baseline was
+approximately \texttt{0.379}. The previous 4-year rolling champion is
+preserved in
+\texttt{outputs/previous\_champion\_archive\_after\_phase2/} with 250M
+Sharpe \texttt{0.811}.
+
+The promoted final strategy should be compared against those archives
+without relabelling them as final.
+
+\hypertarget{reproduction}{%
+\subsection{Reproduction}\label{reproduction}}
+
+The final outputs are regenerated with:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\VariableTok{PYTHON}\OperatorTok{=}\NormalTok{/opt/anaconda3/bin/python3 }\FunctionTok{make}\NormalTok{ reproduce}
+\VariableTok{PYTHON}\OperatorTok{=}\NormalTok{/opt/anaconda3/bin/python3 }\FunctionTok{make}\NormalTok{ test}
+\end{Highlighting}
+\end{Shaded}
+
+The latest test run passed with \texttt{13\ passed}. The submitted
+package includes final daily returns, positions for 50M/250M/1B,
+QuantStats HTML, report-ready audit evidence, and archive notes.
+
+\hypertarget{limitations}{%
+\subsection{Limitations}\label{limitations}}
+
+The main limitations are straightforward: no external prime-broker
+borrow validation, no independent raw FINRA short-interest
+publication-date reconstruction, no separate market-impact model beyond
+the fixed brief cost schedule and realised participation reporting, and
+visible capacity constraints at 1B. The 2025-2026 period remains held
+out for marker evaluation.
+
+\hypertarget{final-decision}{%
+\subsection{Final Decision}\label{final-decision}}
+
+Promotion passed. The final strategy is the volatility-scaled
+overnight-return target with expanding-window weight estimation:
+\texttt{phase2\_g5\_05\_expanding}. The previous 0.811 champion remains
+preserved for audit comparison, while the live final headline is the
+promoted 250M result: \texttt{7.31\%} net annual return, \texttt{4.97\%}
+net volatility, Sharpe \texttt{1.445}, and max drawdown
+\texttt{-10.19\%}.
+
+\end{document}
