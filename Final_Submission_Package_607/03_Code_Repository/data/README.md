@@ -2,7 +2,7 @@
 
 This local code snapshot includes the course-provided raw data files. If the
 repository is copied without data, place the course-provided files here before
-running `make reproduce`:
+running the notebook or direct Python reproduction command:
 
 - `prices.parquet`
 - `sp500_tr.parquet`
