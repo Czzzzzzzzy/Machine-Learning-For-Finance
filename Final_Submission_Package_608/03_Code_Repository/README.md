@@ -45,7 +45,7 @@ notebooks/c2o_research_process_and_tests.ipynb
 It runs the research process from raw coursework data: point-in-time panel
 construction, baseline model training, Phase 1 and Phase 2 model-search tables,
 the promoted final model, ablation, robustness, final position checks,
-report-ready audit data, submission-file audit, and the submitted pytest suite.
+audit data, submission-file audit, and the submitted pytest suite.
 The Python modules under `src/` hold reusable implementation logic; the notebook
 is the formal research run and can regenerate the submitted outputs from an
 empty `outputs/` directory.
@@ -60,10 +60,10 @@ notebooks/c2o_research_process_and_tests.ipynb
 
 The notebook runs the research model chain directly from `data/`. It regenerates
 the submitted output files and reads them back only at the end to audit that the
-serialized artefacts match the notebook-generated final model. It also rebuilds
-the report markdown from those regenerated outputs, attempts to render the
-report PDF, copies the formal report PDF to `../01_Report/`, copies the
-QuantStats tear-sheet to `../02_QuantStats/`, and runs the submitted tests.
+serialized artefacts match the notebook-generated final model. It also writes
+the evidence tables/figures used by the report, refreshes the QuantStats
+tear-sheet, and runs the submitted tests. Report writing and PDF authoring are
+not part of this code package.
 
 The same notebook can also be executed as a single command from this directory:
 
@@ -79,8 +79,9 @@ the local submission package already includes them.
 The folder `model_cache/` may contain trained Phase 2 yearly feature-weight
 schedules. These are small model artefacts, not final performance CSVs. When a
 compatible cache is present, the notebook loads the weights, rebuilds the raw
-point-in-time panel from `data/`, rescored stocks with the cached model, and
-regenerates positions, returns, report tables, figures, QuantStats, and tests.
+point-in-time panel from `data/`, rescores stocks with the cached model, and
+regenerates positions, returns, report-evidence tables, figures, QuantStats, and
+tests.
 If the cache is absent or incompatible with the feature set/development cutoff,
 the notebook trains the weights again and writes a fresh cache.
 
@@ -115,8 +116,6 @@ Additional research commands:
 ```bash
 PYTHONPATH=src python3 -m c2o_strategy.phase2 --data-dir data --output-dir outputs --cutoff 2024-12-31 --development-cutoff 2024-12-31
 PYTHONPATH=src python3 -m c2o_strategy.experiments --data-dir data --output-dir outputs --cutoff 2024-12-31 --development-cutoff 2024-12-31
-PYTHONPATH=src python3 tools/build_corrected_report.py
-PYTHONPATH=src python3 tools/render_report_with_machine_style.py
 ```
 
 ## Main Outputs Included For Audit And Tests
